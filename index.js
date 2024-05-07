@@ -44,6 +44,12 @@ async function run() {
       res.send(result)
     })
 
+    app.get("/allInfo", async (req, res) => {
+      const cursor = infoCollection.find();
+      const allInfo = await cursor.toArray();
+      res.send(allInfo);
+    })
+
     app.get("/singleInfo/:id", async (req, res) => {
       const result = await infoCollection.findOne({
         _id: new ObjectId(req.params.id)
@@ -55,8 +61,16 @@ async function run() {
       const query = { _id: new ObjectId(req.params.id) };
       const data = {
         $set: {
+          spotName: req.body.spotName,
+          location: req.body.location,
+          seasonality: req.body.seasonality,
+          visitor: req.body.visitor,
+          country: req.body.country,
           cost: req.body.cost,
-          seasonality: req.body.seasonality
+          travelTime: req.body.travelTime,
+          imageUrl: req.body.imageUrl,
+          description: req.body.description
+          
         }
       }
       const result = await infoCollection.updateOne(query, data);
