@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -31,13 +31,44 @@ async function run() {
 
 
     app.post("/addInfo", async (req, res) => {
-        console.log(req.body);
-        const result = await infoCollection.insertOne(req.body);
-        res.send(result)
+      console.log(req.body);
+      const result = await infoCollection.insertOne(req.body);
+      res.send(result)
     })
 
+    app.get("/myInfo/:email", async (req, res) => {
+      console.log(req.params.email);
+      const result = await infoCollection.find({
+        email: req.params.email
+      }).toArray();
+      res.send(result)
+    })
 
+    app.get("/singleInfo/:id", async (req, res) => {
+      const result = await infoCollection.findOne({
+        _id: new ObjectId(req.params.id)
+      });
+      res.send(result);
+    })
 
+    app.put("/updateInfo/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const data = {
+        $set: {
+          cost: req.body.cost,
+          seasonality: req.body.seasonality
+        }
+      }
+      const result = await infoCollection.updateOne(query, data);
+      res.send(result)
+    })
+
+    app.delete("/delete/:id", async (req, res) => {
+      const result = await infoCollection.deleteOne({
+        _id: new ObjectId(req.params.id)
+      })
+      res.send(result);
+    })
 
 
     // Send a ping to confirm a successful connection
@@ -53,11 +84,11 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Server Is Running.......');
+  res.send('Server Is Running.......');
 });
 
 app.listen(port, () => {
-    console.log(`Server is Running on Port: ${port}`);
+  console.log(`Server is Running on Port: ${port}`);
 });
 
 
