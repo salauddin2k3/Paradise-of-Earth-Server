@@ -43,6 +43,7 @@ async function run() {
       }).toArray();
       res.send(result)
     })
+    
 
     // Second Second
     app.get("/anotherAllInfo/:country", async (req, res) => {
