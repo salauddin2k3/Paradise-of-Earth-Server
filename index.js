@@ -28,7 +28,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     const infoCollection = client.db("userInfoStore").collection("userInfoCollection");
-
+    const infoCollectionAnother = client.db("userInfoStore").collection("userInfoCollectionAnother");
 
     app.post("/addInfo", async (req, res) => {
       console.log(req.body);
@@ -44,8 +44,24 @@ async function run() {
       res.send(result)
     })
 
+    // Second Second
+    app.get("/anotherAllInfo/:country", async (req, res) => {
+      console.log(req.params.country);
+      const result = await infoCollectionAnother.find({
+        country: req.params.country
+      }).toArray();
+      res.send(result)
+    })
+
     app.get("/allInfo", async (req, res) => {
       const cursor = infoCollection.find();
+      const allInfo = await cursor.toArray();
+      res.send(allInfo);
+    })
+
+    // Second
+    app.get("/anotherAllInfo", async (req, res) => {
+      const cursor = infoCollectionAnother.find();
       const allInfo = await cursor.toArray();
       res.send(allInfo);
     })
